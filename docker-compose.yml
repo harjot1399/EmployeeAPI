@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  app:	
+    build: .
+    container_name: django-gunicorn
+    env_file:
+      - django.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - static:/static
+    command:
+      "gunicorn --workers=2 --bind=0.0.0.0:8000 apiAssignment.wsgi.application"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+
+volumes:
+  static:
